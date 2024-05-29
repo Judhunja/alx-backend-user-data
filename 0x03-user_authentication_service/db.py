@@ -11,8 +11,6 @@ from sqlalchemy.exc import InvalidRequestError
 from user import Base
 from user import User
 
-from typing import List
-
 
 class DB:
     """DB class
@@ -43,7 +41,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs) -> List:
+    def find_user_by(self, **kwargs) -> User:
         """Takes in kwargs and returns the first row in users tabel
         filtered by the method's input arguments"""
         for key, val in kwargs.items():
