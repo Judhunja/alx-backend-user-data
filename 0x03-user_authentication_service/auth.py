@@ -8,18 +8,18 @@ from db import User
 from sqlalchemy.exc import NoResultFound
 
 
+def _hash_password(password: str) -> bytes:
+    """Returns a salted hash of the input password"""
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode(), salt)
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
 
     def __init__(self):
         self._db = DB()
-
-    def _hash_password(self, password: str) -> bytes:
-        """Returns a salted hash of the input password"""
-        salt = bcrypt.gensalt()
-
-        return bcrypt.hashpw(password.encode(), salt)
 
     def register_user(self, email: str, password: str) -> User:
         """Authenticates a user"""
@@ -28,6 +28,6 @@ class Auth:
             if user_exists:
                 raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            password = self._hash_password(password).decode()
+            password = _hash_password(password).decode()
             user = self._db.add_user(email, password)
             return user
