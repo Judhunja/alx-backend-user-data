@@ -54,3 +54,14 @@ class DB:
             raise NoResultFound
         else:
             return found_user
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Updates user's attributes as passed in the kwargs and
+        commits changes to the database"""
+        for key, value in kwargs.items():
+            if key not in ['id', 'email', 'hashed_password', 'session_id',
+                           'reset_token']:
+                raise ValueError
+        user = self.find_user_by(id=user_id)
+        self._session.query(User).filter(id == user.id).update(kwargs)
+        self._session.commit()
