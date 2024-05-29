@@ -5,9 +5,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 
 from user import Base
 from user import User
+
+from typing import List
 
 
 class DB:
@@ -38,3 +42,17 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> List:
+        """Takes in kwargs and returns the first row in users tabel
+        filtered by the method's input arguments"""
+        for key, val in kwargs.items():
+            if key not in ['id', 'email', 'hashed_password', 'session_id',
+                           'reset_token']:
+                raise InvalidRequestError
+
+        found_user = self._session.query(User).filter_by(**kwargs).first()
+        if found_user is None:
+            raise NoResultFound
+        else:
+            return found_user
