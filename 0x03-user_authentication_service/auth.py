@@ -3,8 +3,7 @@
 
 
 import bcrypt
-from db import DB, User
-from sqlalchemy.exc import NoResultFound
+from db import DB, User, NoResultFound
 
 
 class Auth:
@@ -28,5 +27,4 @@ class Auth:
         except NoResultFound:
             hashed_password = self._hash_password(password).decode('utf-8')
             user = self._db.add_user(email, hashed_password)
-            self._db._session.commit()
             return user
