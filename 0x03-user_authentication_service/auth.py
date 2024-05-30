@@ -4,6 +4,7 @@
 
 import bcrypt
 from db import DB, User, NoResultFound
+import uuid
 
 
 class Auth:
@@ -40,6 +41,6 @@ class Auth:
         except Exception:
             return False
 
-    def _generate_uuid(self, uuid) -> str:
+    def _generate_uuid(self) -> str:
         """Returns string representation of a new UUID"""
-        return str(uuid)
+        return str(uuid.uuid4())
