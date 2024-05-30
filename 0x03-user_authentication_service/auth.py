@@ -33,6 +33,8 @@ class Auth:
         """Checks if user password is correct"""
         try:
             user = self._db.find_user_by(email=email)
+            if user is None:
+                return False
             return bcrypt.checkpw(password.encode(),
                                   user.hashed_password.encode())
         except Exception:
