@@ -39,3 +39,7 @@ class Auth:
                                   user.hashed_password.encode())
         except Exception:
             return False
+
+    def _generate_uuid(self, uuid) -> str:
+        """Returns string representation of a new UUID"""
+        return str(uuid)
