@@ -2,8 +2,8 @@
 """This module contains a basic flask app"""
 
 import flask
-from flask import Flask, request, session, make_response
-from auth import Auth
+from flask import Flask, request, session, make_response, redirect, url_for
+from auth import Auth, NoResultFound
 import uuid
 
 
@@ -47,6 +47,18 @@ def login():
         {"email": email, "message": "logged in"}))
     resp.set_cookie("session_id", session_id)
     return resp
+
+
+@app.route("/sessions", methods=['DELETE'], strict_slashes=False)
+def logout():
+    """Logout a user"""
+    session_id = request.cookies.get('session_id')
+    try:
+        user = AUTH._db.find_user_by(session_id=session_id)
+        AUTH.destroy_session(user.id)
+        redirect(url_for('get'))
+    except NoResultFound:
+        flask.abort(403)
 
 
 if __name__ == "__main__":
