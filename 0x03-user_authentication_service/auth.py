@@ -5,6 +5,7 @@
 import bcrypt
 from db import DB, User, NoResultFound
 import uuid
+from typing import Union
 
 
 class Auth:
@@ -54,3 +55,14 @@ class Auth:
         uuid_gen = self._generate_uuid()
         user.session_id = uuid_gen
         return uuid_gen
+
+    def get_user_from_session_id(self,
+                                 session_id: str = None) -> Union[User, None]:
+        """Gets a user with the passed session_id"""
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except NoResultFound:
+            return None
