@@ -78,7 +78,7 @@ class Auth:
         """Updates the reset_token of the user"""
         try:
             user = self._db.find_user_by(email=email)
-            uid = str(uuid.uuid4())
+            uid = self._generate_uuid()
             self._db.update_user(user.id, reset_token=uid)
             return uid
         except NoResultFound:
