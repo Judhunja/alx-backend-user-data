@@ -80,5 +80,20 @@ def profile():
         flask.abort(403)
 
 
+@app.route("/reset_password", methods=['POST'], strict_slashes=False)
+def get_reset_password_token():
+    """Sends email to server which is to send back a
+    reset password token"""
+    email = request.form['email']
+    try:
+        user = AUTH._db.find_user_by(email=email)
+        token = AUTH.get_reset_password_token(user.email)
+        return make_response(
+            flask.jsonify(
+                {"email": user.email, "reset_token": token}), 200)
+    except NoResultFound:
+        flask.abort(403)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
