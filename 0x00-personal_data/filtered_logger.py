@@ -11,7 +11,6 @@ def filter_datum(
 ) -> str:
     """Returns log message with PII fields obfuscated"""
     for field in fields:
-        red = r"\1" + redaction  # to exclude first group from being replaced
-        str1 = re.sub(rf"({field}=)[a-zA-Z0-9/]*", red, message)
-        message = str1  # make subbed string new string to maintain subs
-    return str1
+        red = rf"\1{redaction}"  # to exclude first group from being replaced
+        message = re.sub(rf"({field}=)[a-zA-Z0-9/]*", red, message)
+    return message
