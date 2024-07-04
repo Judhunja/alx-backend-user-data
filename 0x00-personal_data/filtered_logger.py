@@ -12,5 +12,5 @@ def filter_datum(
     """Returns log message with PII fields obfuscated"""
     for field in fields:
         red = rf"\1{redaction}"  # to exclude first group from being replaced
-        message = re.sub(rf"({field}=)[a-zA-Z0-9/]*", red, message)
+        message = re.sub(rf"({field}=)[^{separator}]*", red, message)
     return message
