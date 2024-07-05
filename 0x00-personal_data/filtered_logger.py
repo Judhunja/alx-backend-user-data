@@ -5,6 +5,8 @@
 import re
 from typing import List
 import logging
+import os
+import mysql.connector
 
 
 PII_FIELDS = ('email', 'phone', 'ssn', 'password', 'ip')
@@ -52,3 +54,17 @@ def get_logger() -> logging.Logger:
     shandler.setFormatter(RedactingFormatter)
     user_data.addHandler(shandler)
     return user_data
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """Connects to db using username and pwd that are
+    environmental variables"""
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db = os.getenv('PERSONAL_DATA_DB_NAME')
+    mysql.connector.connect(host=host,
+                            user=username,
+                            password=password,
+                            database=db
+                            )
