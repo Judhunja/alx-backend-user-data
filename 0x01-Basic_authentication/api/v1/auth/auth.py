@@ -7,11 +7,10 @@ from typing import List, TypeVar
 
 
 class Auth:
-    # def __init__(self):
-    #   """Initializes class Auth"""
-    #  pass
+    """Authentication class"""
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """Require auth"""
+        """Check if path requires authentication"""
         if path is None:
             return True
         if len(excluded_paths) == 0 or excluded_paths is None:
