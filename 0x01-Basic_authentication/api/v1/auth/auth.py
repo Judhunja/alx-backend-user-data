@@ -3,7 +3,7 @@
 
 
 from flask import request
-from typing import List, Optional, TypeVar
+from typing import List, TypeVar
 
 
 class Auth:
@@ -14,10 +14,10 @@ class Auth:
         """Require auth"""
         return False
 
-    def authorization_header(self, request=None) -> Optional[str]:
+    def authorization_header(self, request=None) -> str:
         """Authorization header"""
         return None
 
-    def current_user(self, request=None) -> Optional[TypeVar('User')]:
+    def current_user(self, request=None) -> TypeVar("User"):
         """Current user"""
         return None
