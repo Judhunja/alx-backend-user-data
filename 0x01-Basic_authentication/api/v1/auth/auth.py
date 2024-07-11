@@ -13,7 +13,9 @@ class Auth:
         """Check if path requires authentication"""
         if path is None:
             return True
-        if len(excluded_paths) == 0 or excluded_paths is None:
+        if excluded_paths is None:
+            return True
+        elif len(excluded_paths) == 0:
             return True
         rstrip_path = path.rstrip("/")
         rstrip_paths = [p.rstrip("/") for p in excluded_paths]

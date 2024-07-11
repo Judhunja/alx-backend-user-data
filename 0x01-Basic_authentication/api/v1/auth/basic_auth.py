@@ -80,3 +80,7 @@ class BasicAuth(Auth):
         if not newsr.is_valid_password(user_pwd):
             return None
         return newsr
+
+    """def current_user(self, request=None) -> TypeVar('User'):
+        Overloads Auth.current_user and retrieves the User instance
+        for a request"""
