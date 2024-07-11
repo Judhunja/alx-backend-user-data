@@ -69,7 +69,10 @@ class BasicAuth(Auth):
         ):
             return None
 
-        usr_list = User.search({"email": user_email})
+        try:
+            usr_list = User.search({"email": user_email})
+        except KeyError:
+            return None
         if not usr_list:
             return None
         # get the first User object from List of objects returned by search
