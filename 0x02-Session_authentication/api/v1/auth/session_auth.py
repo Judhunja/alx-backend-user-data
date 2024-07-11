@@ -3,6 +3,7 @@
 
 from ..auth.auth import Auth
 from uuid import uuid4
+from ..views.users import User
 
 
 class SessionAuth(Auth):
@@ -32,3 +33,10 @@ class SessionAuth(Auth):
 
         user_id = self.user_id_by_session_id.get(session_id)
         return user_id
+
+    def current_user(self, request=None):
+        """Returns a user instance based on cookie value"""
+        cookie = self.session_cookie(request)
+        userid = self.user_id_for_session_id(cookie)
+        user = User.get(userid)
+        return user
