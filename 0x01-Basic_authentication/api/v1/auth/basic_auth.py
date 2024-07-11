@@ -69,18 +69,21 @@ class BasicAuth(Auth):
         ):
             return None
 
-        try:
-            usr_list = Base.search({"user_email": user_email})
-        except KeyError:
-            return None
+        usr_list = User.search({"email": user_email})
         if not usr_list:
             return None
+        # get the first User object from List of objects returned by search
         usr = usr_list[0]
-        newsr = User(usr)
-        if not newsr.is_valid_password(user_pwd):
+        if not usr.is_valid_password(user_pwd):
             return None
-        return newsr
+        return usr
 
-    """def current_user(self, request=None) -> TypeVar('User'):
-        Overloads Auth.current_user and retrieves the User instance
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Overloads Auth.current_user and retrieves the User instance
         for a request"""
+        header = self.authorization_header(request)
+        base64cred = self.extract_base64_authorization_header(header)
+        decodedbase64cred = self.decode_base64_authorization_header(base64cred)
+        email, pwd = self.extract_user_credentials(decodedbase64cred)
+        usr = self.user_object_from_credentials(email, pwd)
+        return usr
