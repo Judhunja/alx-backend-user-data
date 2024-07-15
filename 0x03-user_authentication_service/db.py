@@ -52,3 +52,13 @@ class DB:
         if found_user is None:
             raise NoResultFound
         return found_user
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """ Updates a user's attributes """
+        columns = [c.name for c in inspect(User).c]
+        for key in kwargs.keys():
+            if key not in columns:
+                raise ValueError
+        user = self.find_user_by(id=user_id)
+        for key, value in kwargs.items():
+            user.key = value
