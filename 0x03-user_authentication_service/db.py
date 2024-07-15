@@ -7,7 +7,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
-from typing import TypeVar
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.inspection import inspect
+from sqlalchemy.exc import InvalidRequestError
 
 
 class DB:
@@ -37,3 +39,16 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """ Return first row in the database as filtered by
+            the kwargs """
+        # Obtain all the columns using c representing column in inspect
+        columns = [c.name for c in inspect(User).c]
+        for key in kwargs.keys():
+            if key not in columns:
+                raise InvalidRequestError
+        found_user = self._session.query(User).filter_by(**kwargs).first()
+        if found_user is None:
+            raise NoResultFound
+        return found_user
