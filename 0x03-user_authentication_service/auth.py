@@ -53,9 +53,9 @@ class Auth:
         """ Create session and return session_id """
         try:
             user = self._db.find_user_by(email=email)
-            session_id = str(uuid4())
-            self._db.update_user(user.id, session_id=session_id)
-            return session_id
+            sess_id = str(uuid4())
+            self._db.update_user(user.id, session_id=sess_id)
+            return sess_id
         except NoResultFound:
             return None
 
@@ -63,13 +63,13 @@ class Auth:
         """ Find user with matching session id """
         if session_id is None:
             return None
-        try:
-            user = self._db.find_user_by(session_id=session_id)
-            return user
-        except NoResultFound:
-            return None
+        user = self._db.find_user_by(session_id=session_id)
+        return user
 
     def destroy_session(self, user_id: int) -> None:
         """ Destroys an existing user session """
-        user = self._db.find_user_by(id=user_id)
-        self._db.update_user(user.id, session_id=None)
+        try:
+            user = self._db.find_user_by(id=user_id)
+            self._db.update_user(user.id, session_id=None)
+        except NoResultFound:
+            pass
