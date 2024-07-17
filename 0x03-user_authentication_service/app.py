@@ -23,9 +23,9 @@ def users():
 
     try:
         AUTH.register_user(email, password)
-        return jsonify({"email": email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
+    return jsonify({"email": email, "message": "user created"})
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
@@ -35,7 +35,9 @@ def login():
     password = request.form.get("password")
     if not AUTH.valid_login(email, password):
         flask.abort(401)
+    user = AUTH._db.find_user_by(email=email)
     sess_id = AUTH.create_session(email)
+    user.session_id = sess_id
     resp = make_response(jsonify({"email": email, "message": "logged in"}))
     resp.set_cookie("session_id", sess_id)
     return resp
@@ -62,11 +64,13 @@ def profile():
     session_id = cookies["session_id"]
     try:
         user = AUTH.get_user_from_session_id(session_id)
-        if user:
-            return jsonify({"email": user.email}), 200
     except Exception:
+        flask.abort(403)
+    if user:
+        return jsonify({"email": user.email}), 200
+    else:
         flask.abort(403)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port="5000", debug=True)
